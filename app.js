@@ -59,7 +59,7 @@ function showNotice(message, type = "info") {
 }
 
 async function loadUploadConfiguration() {
-  const response = await fetch("/config");
+  const response = await fetch("http://3.26.19.134/config");
   const configuration = await response.json();
   if (!response.ok || !Number.isFinite(configuration.max_upload_size_bytes) || configuration.max_upload_size_bytes <= 0) {
     throw new Error("Upload configuration is unavailable.");
@@ -547,7 +547,7 @@ async function loadDashboard({ refreshAll = false, offset = 0 } = {}) {
   params.set("offset", String(state.transactionOffset));
   const allTransactionsRequest = state.transactionsLoaded && !refreshAll ? Promise.resolve(null) : fetchAllTransactions();
   const [summaryResponse, transactionsResponse, unmatchedResponse, allTransactions] = await Promise.all([
-    fetch("/dashboard/summary"), fetch(`/transactions?${params}`), fetch("/unmatched-settlements?limit=100"), allTransactionsRequest,
+    fetch("http://3.26.19.134/dashboard/summary"), fetch(`/transactions?${params}`), fetch("http://3.26.19.134/unmatched-settlements?limit=100"), allTransactionsRequest,
   ]);
   if (!transactionsResponse.ok) {
     const problem = await transactionsResponse.json().catch(() => ({}));
@@ -710,7 +710,7 @@ $("#upload-form").addEventListener("submit", async (event) => {
   const form = new FormData();
   form.append("file", file);
   try {
-    const response = await fetch("/reconcile", { method: "POST", body: form });
+    const response = await fetch("http://3.26.19.134/reconcile", { method: "POST", body: form });
     const result = await response.json();
     if (!response.ok) {
       const detail = result.errors?.map((item) => `${item.row ? `Row ${item.row}: ` : ""}${item.message}`).join(" ") || result.detail || "CSV import failed.";
