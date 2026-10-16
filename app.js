@@ -316,7 +316,7 @@ async function fetchReportRows(source) {
   for (let offset = 0; offset === 0 || offset < total; offset += 500) {
     params.set("limit", "500");
     params.set("offset", String(offset));
-    const response = await fetch(`/transactions?${params}`);
+    const response = await fetch('https://3.26.19.134/transactions?${params}`);
     if (!response.ok) throw new Error("The report could not be prepared. Review the filters and try again.");
     const page = await response.json();
     total = page.total;
@@ -339,7 +339,7 @@ async function fetchAllTransactions() {
   const items = [];
   let total = 0;
   for (let offset = 0; offset === 0 || offset < total; offset += TRANSACTION_FETCH_SIZE) {
-    const response = await fetch(`/transactions?limit=${TRANSACTION_FETCH_SIZE}&offset=${offset}`);
+    const response = await fetch('https://3.26.19.134/transactions?limit=${TRANSACTION_FETCH_SIZE}&offset=${offset}`);
     if (!response.ok) throw new Error("The complete transaction list could not be loaded. Refresh and try again.");
     const page = await response.json();
     total = page.total;
@@ -547,7 +547,7 @@ async function loadDashboard({ refreshAll = false, offset = 0 } = {}) {
   params.set("offset", String(state.transactionOffset));
   const allTransactionsRequest = state.transactionsLoaded && !refreshAll ? Promise.resolve(null) : fetchAllTransactions();
   const [summaryResponse, transactionsResponse, unmatchedResponse, allTransactions] = await Promise.all([
-    fetch("https://3.26.19.134/dashboard/summary"), fetch(`/transactions?${params}`), fetch("https://3.26.19.134/unmatched-settlements?limit=100"), allTransactionsRequest,
+    fetch("https://3.26.19.134/dashboard/summary"), fetch('https://3.26.19.134/transactions?${params}`), fetch("https://3.26.19.134/unmatched-settlements?limit=100"), allTransactionsRequest,
   ]);
   if (!transactionsResponse.ok) {
     const problem = await transactionsResponse.json().catch(() => ({}));
@@ -591,7 +591,7 @@ function renderDetail(transaction) {
 }
 
 async function openDetail(transactionId) {
-  const response = await fetch(`/transactions/${encodeURIComponent(transactionId)}`);
+  const response = await fetch('https://3.26.19.134/transactions/${encodeURIComponent(transactionId)}`);
   if (!response.ok) {
     showNotice("Transaction details could not be loaded.", "error");
     return;
