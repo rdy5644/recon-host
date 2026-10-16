@@ -546,9 +546,12 @@ async function loadDashboard({ refreshAll = false, offset = 0 } = {}) {
   params.set("limit", String(TRANSACTION_PAGE_SIZE));
   params.set("offset", String(state.transactionOffset));
   const allTransactionsRequest = state.transactionsLoaded && !refreshAll ? Promise.resolve(null) : fetchAllTransactions();
-  const [summaryResponse, transactionsResponse, unmatchedResponse, allTransactions] = await Promise.all([
-    fetch("https://3.26.19.134/dashboard/summary"), fetch(`https://3.26.19.134/transactions?${params}`),, fetch("https://3.26.19.134/unmatched-settlements?limit=100"), allTransactionsRequest,
-  ]);
+const [summaryResponse, transactionsResponse, unmatchedResponse, allTransactions] = await Promise.all([
+  fetch("https://3.26.19.134/dashboard/summary"),
+  fetch(`https://3.26.19.134/transactions?${params}`),
+  fetch("https://3.26.19.134/unmatched-settlements?limit=100"),
+  allTransactionsRequest,
+]);
   if (!transactionsResponse.ok) {
     const problem = await transactionsResponse.json().catch(() => ({}));
     throw new Error(problem.detail || "The transaction list could not load. Review the filters and try again.");
